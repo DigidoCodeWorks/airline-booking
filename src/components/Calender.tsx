@@ -1,10 +1,8 @@
-'use client';
-
 import { addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, getDate, isSameDay, isSameMonth, setMonth, startOfMonth, startOfWeek, subMonths } from 'date-fns';
 import React, { useMemo, useState } from 'react'
 import Arrow from './Icons/Arrow';
 
-const CalenderHeaders = [
+const CALENDER_HEADERS = [
     'Sun',
     'Mon',
     'Tue',
@@ -22,7 +20,7 @@ type Props = {
 
 const Calender = ({ month: monthFromProps, onMonthChange, onSelectedDate }: Props) => {
     const [month, setMonth] = useState(monthFromProps)
-    const [SelectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [SelectedDate, setSelectedDate] = useState<Date | null>(monthFromProps);
 
     const handleNext = () => {
         const nextDate = startOfMonth(addMonths(month, 1));
@@ -42,11 +40,11 @@ const Calender = ({ month: monthFromProps, onMonthChange, onSelectedDate }: Prop
     const selectDate = (date: Date) => {
         setMonth(date)
         setSelectedDate(date)
-        if (onSelectedDate) {
-            onSelectedDate(date)
-        }
         if (onMonthChange) {
             onMonthChange(date)
+        }
+        if (onSelectedDate) {
+            onSelectedDate(date)
         }
     }
 
@@ -59,16 +57,22 @@ const Calender = ({ month: monthFromProps, onMonthChange, onSelectedDate }: Prop
         [month],
     );
 
+    const handleOnEnter = (e: React.KeyboardEvent<HTMLSpanElement>, day: Date) => {
+        if (e.key === 'Enter') {
+            selectDate(day)
+        }
+    }
+
     return (
-        <div className='p-6 max-w-lg bg-white shadow-[0px_10px_50px_0px_rgba(139,139,139,0.10)] rounded-3xl'>
+        <div className='p-6 bg-white shadow-[0px_10px_50px_0px_rgba(139,139,139,0.10)] rounded-3xl'>
             <div className='flex justify-between items-center'>
-                <button onClick={handlePrev}>
+                <button type='button' onClick={handlePrev}>
                     <Arrow />
                 </button>
-                <button>
+                <button type='button'>
                     <h5 className='font-semibold'>{format(month, 'MMMM yyyy')}</h5>
                 </button>
-                <button onClick={handleNext}>
+                <button type='button' onClick={handleNext}>
                     <Arrow className=' transform rotate-180' />
                 </button>
             </div>
@@ -78,16 +82,18 @@ const Calender = ({ month: monthFromProps, onMonthChange, onSelectedDate }: Prop
                         className={'py-6 flex justify-center items-center text-neutral-500 text-sm font-semibold'}
                         key={index}
                     >
-                        {CalenderHeaders[index]}
+                        {CALENDER_HEADERS[index]}
                     </span>
                 )}
                 {days.map((day, index) => (
                     <span
+                        tabIndex={0}
                         key={index}
+                        onKeyDownCapture={(e) => handleOnEnter(e, day)}
                         onClick={() => selectDate(day)}
                         aria-disabled={!isSameMonth(day, month)}
                         aria-selected={!!(SelectedDate && isSameDay(SelectedDate, day))}
-                        className={'py-4 flex justify-center items-center font-medium cursor-pointer text-neutral-50 aria-selected:text-white aria-selected:bg-primary-500 rounded-3xl aria-disabled:text-neutral-100'}
+                        className={'py-2 flex justify-center items-center font-medium cursor-pointer text-neutral-50 aria-selected:text-white aria-selected:bg-primary-500 rounded-3xl aria-disabled:text-neutral-100'}
                     >
                         {getDate(day)}
                     </span>
