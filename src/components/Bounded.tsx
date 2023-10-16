@@ -14,10 +14,12 @@ export default function Bounded({
 }: BoundedProps) {
   return (
     <Comp
-      className={clsx("px-4 py-10 md:py-14 md:px-6 lg:py-16", className)}
+      className={clsx("flex items-center justify-center h-screen", className)}
       {...props}
     >
-      <div className="mx-auto w-full max-w-6xl">{children}</div>
+      <div className="bg-white w-[70vw] h-[40vw] mx-auto rounded-xl">
+        {children}
+      </div>
     </Comp>
   );
 }
