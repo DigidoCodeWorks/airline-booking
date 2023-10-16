@@ -17,7 +17,7 @@ export default function Bounded({
       className={clsx("flex items-center justify-center h-screen", className)}
       {...props}
     >
-      <div className="bg-white w-[80vw] h-[40vw] mx-auto rounded-xl">
+      <div className="bg-white w-[70vw] h-[40vw] mx-auto rounded-xl">
         {children}
       </div>
     </Comp>
